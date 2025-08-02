@@ -1,6 +1,6 @@
 # Ứng Dụng Thông Báo Ngân Hàng
 
-Ứng dụng Flutter để kết nối điện thoại với loa Bluetooth và phát thông báo khi nhận được tiền từ ngân hàng.
+Ứng dụng Flutter cross-platform để kết nối điện thoại với loa Bluetooth và phát thông báo khi nhận được tiền từ ngân hàng.
 
 ## Tính Năng Chính
 
@@ -10,12 +10,15 @@
 - Hiển thị trạng thái kết nối real-time
 
 ### 🔊 Phát Âm Thanh Thông Báo
-- Phát âm thanh beep khi nhận được thông báo ngân hàng
+- Text-to-Speech đọc thông báo bằng tiếng Việt
+- Phát âm thanh khi nhận được thông báo ngân hàng
 - Tùy chỉnh âm thanh và thời gian phát
 - Test âm thanh trực tiếp từ ứng dụng
 
-### 💰 Mô Phỏng Thông Báo Ngân Hàng
-- Tạo thông báo ngẫu nhiên mỗi 30 giây
+### 💰 Thông Báo Ngân Hàng
+- **Android**: Đọc SMS thực tế từ ngân hàng
+- **iOS**: Push notifications và nhập thủ công
+- Mô phỏng thông báo ngẫu nhiên mỗi 30 giây
 - Hiển thị thông tin chi tiết: người gửi, số tài khoản, số tiền, tin nhắn
 - Lịch sử thông báo với giao diện đẹp
 
@@ -30,12 +33,12 @@
 ### Yêu Cầu Hệ Thống
 - Flutter SDK 3.7.2+
 - Android Studio / VS Code
-- Thiết bị Android với Bluetooth
+- Thiết bị Android/iOS với Bluetooth
 
 ### Bước 1: Clone Project
 ```bash
-git clone <repository-url>
-cd my_flutter_app
+git clone https://github.com/Anhduong185/banking-app.git
+cd banking-app
 ```
 
 ### Bước 2: Cài Đặt Dependencies
@@ -63,6 +66,7 @@ flutter run
 
 ### 3. Test Thủ Công
 - Nhấn "Test thông báo" để tạo thông báo ngay lập tức
+- Nhấn "Nhập thủ công" để nhập thông tin giao dịch
 - Nhấn "Test âm thanh" để phát âm thanh test
 
 ## Cấu Trúc Project
@@ -75,9 +79,12 @@ lib/
 ├── services/
 │   ├── bluetooth_service.dart     # Quản lý Bluetooth
 │   ├── audio_service.dart         # Phát âm thanh
-│   └── banking_service.dart       # Mô phỏng ngân hàng
+│   ├── banking_service.dart       # Xử lý thông báo ngân hàng
+│   ├── notification_service.dart  # Thông báo hệ thống
+│   └── platform_service.dart      # Detect platform
 ├── screens/
-│   └── home_screen.dart           # Màn hình chính
+│   ├── home_screen.dart           # Màn hình chính
+│   └── manual_input_screen.dart   # Màn hình nhập thủ công
 └── widgets/
     ├── notification_card.dart      # Card hiển thị thông báo
     └── bluetooth_device_card.dart # Card thiết bị Bluetooth
@@ -85,12 +92,17 @@ lib/
 
 ## Dependencies
 
-- `flutter_bluetooth_serial`: Kết nối Bluetooth
+- `flutter_blue_plus`: Kết nối Bluetooth (modern)
 - `audioplayers`: Phát âm thanh
+- `flutter_tts`: Text-to-Speech
+- `flutter_sms_inbox`: Đọc SMS (Android)
+- `firebase_core`: Firebase core (iOS)
+- `firebase_messaging`: Push notifications (iOS)
 - `flutter_local_notifications`: Thông báo local
 - `http`: HTTP requests
 - `shared_preferences`: Lưu cài đặt
 - `permission_handler`: Quản lý quyền
+- `platform`: Detect platform
 
 ## Quyền Cần Thiết
 
@@ -100,8 +112,29 @@ lib/
 - `BLUETOOTH_CONNECT`: Kết nối Bluetooth (Android 12+)
 - `BLUETOOTH_SCAN`: Tìm kiếm thiết bị (Android 12+)
 - `ACCESS_FINE_LOCATION`: Vị trí (cần thiết cho Bluetooth)
+- `RECEIVE_SMS`: Nhận SMS
+- `READ_SMS`: Đọc SMS
 - `RECORD_AUDIO`: Ghi âm
 - `MODIFY_AUDIO_SETTINGS`: Điều chỉnh âm thanh
+
+### iOS
+- `NSBluetoothAlwaysUsageDescription`: Bluetooth
+- `NSLocationWhenInUseUsageDescription`: Vị trí
+- `NSMicrophoneUsageDescription`: Microphone
+
+## Deploy
+
+### Android
+```bash
+flutter build apk --release
+```
+
+### iOS (via Codemagic)
+1. Push code lên GitHub
+2. Connect với Codemagic
+3. Build tự động
+4. Download IPA
+5. Cài qua Sideloadly
 
 ## Tính Năng Nâng Cao
 

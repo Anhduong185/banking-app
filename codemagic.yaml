@@ -1,0 +1,24 @@
+workflows:
+  ios-workflow:
+    name: iOS Build
+    environment:
+      xcode: latest
+      cocoapods: default
+      vars:
+        XCODE_PROJECT: "ios/Runner.xcworkspace"
+        XCODE_SCHEME: "Runner"
+        BUNDLE_ID: "com.yourname.banking-notification"
+    scripts:
+      - name: Get Flutter packages
+        script: flutter pub get
+      - name: Build iOS app
+        script: |
+          flutter build ipa --release \
+            --export-options-plist=/tmp/exportOptions.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      email:
+        recipients:
+          - your-email@example.com 

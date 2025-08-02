@@ -42,7 +42,7 @@ dependencies:
   audioplayers: ^5.2.1
   
   # SMS listener for Android only
-  flutter_sms_inbox: ^0.3.0
+  flutter_sms_inbox: ^1.0.4
   
   # Push notifications for iOS
   firebase_core: ^2.24.2
